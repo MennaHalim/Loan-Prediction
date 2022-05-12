@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 # read data
 data = pd.read_csv('Train data.csv')
-
 # preprocessing
 # # Handle  Missing values
 
@@ -98,9 +98,38 @@ data.dropna(subset=['Property_Area'], inplace=True)
 
 # calculate lift score
 from mlxtend.evaluate import lift_score
-print (data)
-#lift = lift_score(data.iloc[1:, 1], data.iloc[1:, -1])
-#lift
+#print(data.to_string())
+#lift = lift_score(data.iloc[:, 1], data.iloc[:, -1])
+# lift
+
+
+# # Handle  Wrong format
+# --> Encoding
+labelEncoder = LabelEncoder()
+labelEncoder.fit(data['Gender'])
+data['Gender'] = labelEncoder.transform(data['Gender'])
+
+labelEncoder.fit(data['Married'])
+data['Married'] = labelEncoder.transform(data['Married'])
+
+labelEncoder.fit(data['Education'])
+data["'Education'"] = labelEncoder.transform(data['Education'])
+
+labelEncoder.fit(data['Property_Area'])
+data['Property_Area'] = labelEncoder.transform(data['Property_Area'])
+
+
+# --> Handle Dependents +3 category
+Dependents_list = list(data.iloc[:, 3])
+print(Dependents_list)
+#for i in range(len(Dependents_list)):
+#    if Dependents_list[i] != '0' and Dependents_list[i] != '1' and Dependents_list[i] != '2':
+#        data._set_value(i, 'Dependents', '3')
+
+#print(list(data.iloc[:, 3]))
+
+labelEncoder.fit(data['Dependents'])
+data['Dependents'] = labelEncoder.transform(data['Dependents'])
 
 
 
