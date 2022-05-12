@@ -10,7 +10,7 @@ data = pd.read_csv('Train data.csv')
 
 # ##Gender
 # --> remove non values
-data['Gender'].dropna(inplace=True)
+data.dropna(subset=['Gender'], inplace=True)
 
 # --> replace with most repeated value
 # val = data['Gender'].mode()[0]
@@ -19,7 +19,7 @@ data['Gender'].dropna(inplace=True)
 
 # ##Married
 # --> remove non values
-data['Married'].dropna(inplace=True)
+data.dropna(subset=['Married'], inplace=True)
 
 # --> replace with most repeated value
 # val = data['Married'].mode()[0]
@@ -37,7 +37,7 @@ data['Dependents'].fillna(0, inplace=True)
 
 # ##Education
 # --> remove non values
-data['Education'].dropna(inplace=True)
+data.dropna(subset=['Education'], inplace=True)
 
 # --> replace with most repeated value
 # val = data['Education'].mode()[0]
@@ -46,7 +46,7 @@ data['Education'].dropna(inplace=True)
 
 # ##Self_Employed
 # --> remove non values
-data['Self_Employed'].dropna(inplace=True)
+data.dropna(subset=['Self_Employed'], inplace=True)
 
 # --> replace with most repeated value
 # val = data['Self_Employed'].mode()[0]
@@ -58,7 +58,7 @@ data['Self_Employed'].dropna(inplace=True)
 
 # ##ApplicantIncome
 # --> remove non values
-data['ApplicantIncome'].dropna(inplace=True)
+data.dropna(subset=['ApplicantIncome'], inplace=True)
 
 # --> replace with median
 # val = data['ApplicantIncome'].median()
@@ -76,19 +76,20 @@ data['CoapplicantIncome'].fillna(0, inplace=True)
 
 # ##LoanAmount
 # --> remove non values
-data['LoanAmount'].dropna(inplace=True)
+data.dropna(subset=['LoanAmount'], inplace=True)
+
 
 # ##Loan_Amount_Term
 # --> remove non values
-data['Loan_Amount_Term'].dropna(inplace=True)
+data.dropna(subset=['Loan_Amount_Term'], inplace=True)
 
 # ##Credit_History
 # --> remove non values
-data['Credit_History'].dropna(inplace=True)
+data.dropna(subset=['Credit_History'], inplace=True)
 
 # ##Property_Area
 # --> remove non values
-data['Property_Area'].dropna(inplace=True)
+data.dropna(subset=['Property_Area'], inplace=True)
 
 # --> replace with most repeated value
 # val = data['Property_Area'].mode()[0]
@@ -97,7 +98,8 @@ data['Property_Area'].dropna(inplace=True)
 
 # calculate lift score
 from mlxtend.evaluate import lift_score
-lift = lift_score(data.iloc[1:, 1], data.iloc[1:, -1])
+print (data)
+#lift = lift_score(data.iloc[1:, 1], data.iloc[1:, -1])
 #lift
 
 
