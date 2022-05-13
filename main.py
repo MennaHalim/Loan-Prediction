@@ -1,7 +1,26 @@
+from turtle import mode
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import plot_tree
+from sklearn.metrics import accuracy_score
+
+
+def Decision_Tree_Classifier_Model(X_Train, Y_Train, X_Test, Y_Test):
+    model = DecisionTreeClassifier()
+    model = model.fit(X_Train, Y_Train)
+    print(plot_tree(model))
+    # insert test_data without class label to predict from classifier
+    res = mode.predict(X_Test)
+    print(res)
+    # insert the real class label for test data and predicted result to calculate accuracy
+
+    accuracy = accuracy_score(Y_Test, res)
+    print(accuracy)
+
 
 # read data
 data = pd.read_csv('Train data.csv')
@@ -78,7 +97,6 @@ data['CoapplicantIncome'].fillna(0, inplace=True)
 # --> remove non values
 data.dropna(subset=['LoanAmount'], inplace=True)
 
-
 # ##Loan_Amount_Term
 # --> remove non values
 data.dropna(subset=['Loan_Amount_Term'], inplace=True)
@@ -97,9 +115,9 @@ data.dropna(subset=['Property_Area'], inplace=True)
 
 
 # calculate lift score
-#from mlxtend.evaluate import lift_score
-#print(data.to_string())
-#lift = lift_score(data.iloc[:, 1], data.iloc[:, -1])
+# from mlxtend.evaluate import lift_score
+# print(data.to_string())
+# lift = lift_score(data.iloc[:, 1], data.iloc[:, -1])
 # lift
 
 
@@ -118,24 +136,23 @@ data["'Education'"] = labelEncoder.transform(data['Education'])
 labelEncoder.fit(data['Property_Area'])
 data['Property_Area'] = labelEncoder.transform(data['Property_Area'])
 
-
 # --> Handle Dependents +3 category
 Dependents_list = list(data.iloc[:, 3])
-print(Dependents_list)
+# print(Dependents_list)
 for i in range(len(Dependents_list)):
     if Dependents_list[i] != '0' and Dependents_list[i] != '1' and Dependents_list[i] != '2':
         Dependents_list[i] = '3'
 
 data['Dependents'] = Dependents_list
-print(data['Dependents'])
+# print(data['Dependents'])
 
 labelEncoder.fit(data['Dependents'])
 data['Dependents'] = labelEncoder.transform(data['Dependents'])
-
-
 
 # split data into train data and test data
 x = data.iloc[:, 1: -1]
 y = data.iloc[:, -1]
 
+print(data.iloc[:, 4:])
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
+Decision_Tree_Classifier_Model(x_train, y_train, x_test, y_test)
