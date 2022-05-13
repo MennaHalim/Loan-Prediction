@@ -5,3 +5,4 @@ The idea behind this ML project is to build a model that will classify Loan stat
 https://www.geeksforgeeks.org/how-to-split-a-dataset-into-train-and-test-sets-using-python/
 https://www.geeksforgeeks.org/data-preprocessing-in-data-mining/
 https://www.w3schools.com/python/pandas/pandas_cleaning.asp
+https://medium.com/thinkport/top-10-binary-classification-algorithms-a-beginners-guide-feeacbd7a3e2
