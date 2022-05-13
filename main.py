@@ -9,48 +9,31 @@ from sklearn.tree import plot_tree
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import LogisticRegression
 
 
-def Decision_Tree_Classifier_Model(X_Train, X_Test, Y_Test, Y_Train):
+def Decision_Tree_Classifier_Model():
     model = DecisionTreeClassifier()
-    model = model.fit(X_Train, Y_Train)
-    #print(plot_tree(model))
-
-    # insert test_data without class label to predict from classifier
-    res = model.predict(X_Test)
-    #print(res)
-    # insert the real class label for test data and predicted result to calculate accuracy
-
-    accuracy = accuracy_score(Y_Test, res)
-    print(accuracy)
+    model = model.fit(x_train, y_train)
+    print("Decision_Tree Score: ", model.score(x_test, y_test))
 
 
-def KNN_Classifier_Model(X_Train, X_Test, Y_Test, Y_Train):
+def KNN_Classifier_Model():
     model = KNeighborsClassifier(n_neighbors = 31)
-    model = model.fit(X_Train, Y_Train)
-    #print(plot_tree(model))
-
-    # insert test_data without class label to predict from classifier
-    res = model.predict(X_Test)
-    #print(res)
-    # insert the real class label for test data and predicted result to calculate accuracy
-
-    accuracy = accuracy_score(Y_Test, res)
-    print(accuracy)
+    model = model.fit(x_train, y_train)
+    print("KNN Score: ", model.score(x_test, y_test))
 
 
-def GaussianNB_Classifier_Model(X_Train, X_Test, Y_Test, Y_Train):
+def GaussianNB_Classifier_Model():
     model = GaussianNB()
-    model = model.fit(X_Train, Y_Train)
-    #print(plot_tree(model))
+    model = model.fit(x_train, y_train)
+    print("GaussianNB Score: ", model.score(x_test, y_test))
 
-    # insert test_data without class label to predict from classifier
-    res = model.predict(X_Test)
-    #print(res)
-    # insert the real class label for test data and predicted result to calculate accuracy
 
-    accuracy = accuracy_score(Y_Test, res)
-    print(accuracy)
+def LogisticRegression_Model():
+    model = LogisticRegression(max_iter=1000)
+    model.fit(x_train, y_train)
+    print("LogisticRegression Score: ", model.score(x_test, y_test))
 
 # read data
 data = pd.read_csv('Train data.csv')
@@ -188,6 +171,7 @@ y = data.iloc[:, -1]
 
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
-Decision_Tree_Classifier_Model(x_train, x_test, y_test, y_train)
-KNN_Classifier_Model(x_train, x_test, y_test, y_train)
-GaussianNB_Classifier_Model(x_train, x_test, y_test, y_train)
+Decision_Tree_Classifier_Model()
+KNN_Classifier_Model()
+GaussianNB_Classifier_Model()
+LogisticRegression_Model()
