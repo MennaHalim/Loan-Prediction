@@ -7,6 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import plot_tree
 from sklearn.metrics import accuracy_score
+from sklearn.neighbors import KNeighborsClassifier
 
 
 def Decision_Tree_Classifier_Model(X_Train, X_Test, Y_Test, Y_Train):
@@ -22,6 +23,19 @@ def Decision_Tree_Classifier_Model(X_Train, X_Test, Y_Test, Y_Train):
     accuracy = accuracy_score(Y_Test, res)
     print(accuracy)
 
+
+def KNN_Classifier_Model(X_Train, X_Test, Y_Test, Y_Train):
+    model = KNeighborsClassifier(n_neighbors = 31)
+    model = model.fit(X_Train, Y_Train)
+    #print(plot_tree(model))
+
+    # insert test_data without class label to predict from classifier
+    res = model.predict(X_Test)
+    #print(res)
+    # insert the real class label for test data and predicted result to calculate accuracy
+
+    accuracy = accuracy_score(Y_Test, res)
+    print(accuracy)
 
 # read data
 data = pd.read_csv('Train data.csv')
@@ -160,3 +174,4 @@ y = data.iloc[:, -1]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
 Decision_Tree_Classifier_Model(x_train, x_test, y_test, y_train)
+KNN_Classifier_Model(x_train, x_test, y_test, y_train)
