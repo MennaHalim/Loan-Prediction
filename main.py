@@ -5,11 +5,11 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.tree import plot_tree
-from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.ensemble import BaggingClassifier
 
 
 def Decision_Tree_Classifier_Model():
@@ -34,6 +34,23 @@ def LogisticRegression_Model():
     model = LogisticRegression(max_iter=1000)
     model.fit(x_train, y_train)
     print("LogisticRegression Score: ", model.score(x_test, y_test))
+
+
+def SVM_Model():
+    model = LinearSVC(C=0.0001)
+    model.fit(x_train, y_train)
+    print("SVM Score: ", model.score(x_test, y_test))
+
+
+def BaggingClassifier_Model():
+    # max_samples: maximum size 0.5=50% of each sample taken from the full dataset
+    # max_features: maximum of features 1=100% taken here all 10K
+    # n_estimators: number of decision trees
+    model = BaggingClassifier(DecisionTreeClassifier(), max_samples=0.5, max_features=1.0, n_estimators=7)
+    model.fit(x_train, y_train)
+    print("BaggingClassifier Score: ", model.score(x_test, y_test))
+
+
 
 # read data
 data = pd.read_csv('Train data.csv')
@@ -175,3 +192,5 @@ Decision_Tree_Classifier_Model()
 KNN_Classifier_Model()
 GaussianNB_Classifier_Model()
 LogisticRegression_Model()
+SVM_Model()
+BaggingClassifier_Model()
