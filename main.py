@@ -15,7 +15,7 @@ def Decision_Tree_Classifier_Model(X_Train, Y_Train, X_Test, Y_Test):
     print(plot_tree(model))
     # insert test_data without class label to predict from classifier
     res = mode.predict(X_Test)
-    print(res)
+#    print(res)
     # insert the real class label for test data and predicted result to calculate accuracy
 
     accuracy = accuracy_score(Y_Test, res)
@@ -131,10 +131,16 @@ labelEncoder.fit(data['Married'])
 data['Married'] = labelEncoder.transform(data['Married'])
 
 labelEncoder.fit(data['Education'])
-data["'Education'"] = labelEncoder.transform(data['Education'])
+data['Education'] = labelEncoder.transform(data['Education'])
 
 labelEncoder.fit(data['Property_Area'])
 data['Property_Area'] = labelEncoder.transform(data['Property_Area'])
+
+labelEncoder.fit(data['Self_Employed'])
+data['Self_Employed'] = labelEncoder.transform(data['Self_Employed'])
+
+labelEncoder.fit(data['Loan_Status'])
+data['Loan_Status'] = labelEncoder.transform(data['Loan_Status'])
 
 # --> Handle Dependents +3 category
 Dependents_list = list(data.iloc[:, 3])
@@ -153,6 +159,6 @@ data['Dependents'] = labelEncoder.transform(data['Dependents'])
 x = data.iloc[:, 1: -1]
 y = data.iloc[:, -1]
 
-print(data.iloc[:, 4:])
+
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
 Decision_Tree_Classifier_Model(x_train, y_train, x_test, y_test)
