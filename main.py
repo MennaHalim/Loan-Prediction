@@ -14,6 +14,25 @@ from sklearn.ensemble import VotingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 
+from keras import layers
+from keras import models
+from keras import optimizers
+from keras import losses
+from keras import metrics
+
+
+def NN():
+    # split an additional validation dataset
+    x_partial_train, x_validation ,y_partial_train ,y_validation= train_test_split(x_train, y_train, test_size=0.3, random_state=0)
+    model = models.Sequential()
+    model.add(layers.Dense(16, activation='relu', input_shape=(490,)))
+    model.add(layers.Dense(16, activation='relu'))
+    model.add(layers.Dense(1, activation='sigmoid'))
+    model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+    model.fit(x_partial_train, y_partial_train, epochs=4, batch_size=10, validation_data=(x_validation, y_validation))
+    print("score on test: " + str(model.evaluate(x_test, y_test)[1]))
+    print("score on train: " + str(model.evaluate(x_train, y_train)[1]))
+
 
 def RandomForestClassifier_Model():
     # n_estimators = number of decision trees
@@ -69,9 +88,7 @@ def VotingClassifier_Model():
     evc = VotingClassifier(estimators=[('mnb', GaussianNB()), ('lr', LogisticRegression(max_iter=1000)),
                                        ('rf', RandomForestClassifier(n_estimators=35, max_depth=7))], voting='hard')
     evc.fit(x_train, y_train)
-    print("score on test: " + str(evc.score(x_test, y_test)))
-    print("score on train: " + str(evc.score(x_train, y_train)))
-
+    print("voting score: " + str(evc.score(x_test, y_test)))
 
 # read data
 data = pd.read_csv('Train data.csv')
@@ -215,3 +232,4 @@ SVM()
 BaggingClassifier_Model()
 RandomForestClassifier_Model()
 VotingClassifier_Model()
+#NN()
