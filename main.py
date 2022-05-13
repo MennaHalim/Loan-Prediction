@@ -10,6 +10,16 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+
+def RandomForestClassifier_Model():
+    # n_estimators = number of decision trees
+    model = RandomForestClassifier(n_estimators=35, max_depth=7)
+    model.fit(x_train, y_train)
+    print("RandomForest Score: ", model.score(x_test, y_test))
 
 
 def Decision_Tree_Classifier_Model():
@@ -48,8 +58,7 @@ def BaggingClassifier_Model():
     # n_estimators: number of decision trees
     model = BaggingClassifier(DecisionTreeClassifier(), max_samples=0.5, max_features=1.0, n_estimators=7)
     model.fit(x_train, y_train)
-    print("BaggingClassifier Score: ", model.score(x_test, y_test))
-
+    print("Bagging Score: ", model.score(x_test, y_test))
 
 
 # read data
@@ -194,3 +203,4 @@ GaussianNB_Classifier_Model()
 LogisticRegression_Model()
 SVM_Model()
 BaggingClassifier_Model()
+RandomForestClassifier_Model()
