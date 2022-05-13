@@ -9,13 +9,14 @@ from sklearn.tree import plot_tree
 from sklearn.metrics import accuracy_score
 
 
-def Decision_Tree_Classifier_Model(X_Train, Y_Train, X_Test, Y_Test):
+def Decision_Tree_Classifier_Model(X_Train, X_Test, Y_Test, Y_Train):
     model = DecisionTreeClassifier()
     model = model.fit(X_Train, Y_Train)
-    print(plot_tree(model))
+    #print(plot_tree(model))
+
     # insert test_data without class label to predict from classifier
-    res = mode.predict(X_Test)
-#    print(res)
+    res = model.predict(X_Test)
+    #print(res)
     # insert the real class label for test data and predicted result to calculate accuracy
 
     accuracy = accuracy_score(Y_Test, res)
@@ -150,10 +151,7 @@ for i in range(len(Dependents_list)):
         Dependents_list[i] = '3'
 
 data['Dependents'] = Dependents_list
-# print(data['Dependents'])
 
-labelEncoder.fit(data['Dependents'])
-data['Dependents'] = labelEncoder.transform(data['Dependents'])
 
 # split data into train data and test data
 x = data.iloc[:, 1: -1]
@@ -161,4 +159,4 @@ y = data.iloc[:, -1]
 
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
-Decision_Tree_Classifier_Model(x_train, y_train, x_test, y_test)
+Decision_Tree_Classifier_Model(x_train, x_test, y_test, y_train)
