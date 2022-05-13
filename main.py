@@ -97,7 +97,7 @@ data.dropna(subset=['Property_Area'], inplace=True)
 
 
 # calculate lift score
-from mlxtend.evaluate import lift_score
+#from mlxtend.evaluate import lift_score
 #print(data.to_string())
 #lift = lift_score(data.iloc[:, 1], data.iloc[:, -1])
 # lift
@@ -122,11 +122,12 @@ data['Property_Area'] = labelEncoder.transform(data['Property_Area'])
 # --> Handle Dependents +3 category
 Dependents_list = list(data.iloc[:, 3])
 print(Dependents_list)
-#for i in range(len(Dependents_list)):
-#    if Dependents_list[i] != '0' and Dependents_list[i] != '1' and Dependents_list[i] != '2':
-#        data._set_value(i, 'Dependents', '3')
+for i in range(len(Dependents_list)):
+    if Dependents_list[i] != '0' and Dependents_list[i] != '1' and Dependents_list[i] != '2':
+        Dependents_list[i] = '3'
 
-#print(list(data.iloc[:, 3]))
+data['Dependents'] = Dependents_list
+print(data['Dependents'])
 
 labelEncoder.fit(data['Dependents'])
 data['Dependents'] = labelEncoder.transform(data['Dependents'])
