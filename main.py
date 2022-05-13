@@ -10,55 +10,67 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 from sklearn.ensemble import BaggingClassifier
-from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import VotingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 
 
 def RandomForestClassifier_Model():
     # n_estimators = number of decision trees
-    model = RandomForestClassifier(n_estimators=35, max_depth=7)
-    model.fit(x_train, y_train)
-    print("RandomForest Score: ", model.score(x_test, y_test))
+    LR_model = RandomForestClassifier(n_estimators=35, max_depth=7)
+    LR_model.fit(x_train, y_train)
+    print("RandomForest Score: ", LR_model.score(x_test, y_test))
 
 
 def Decision_Tree_Classifier_Model():
-    model = DecisionTreeClassifier()
-    model = model.fit(x_train, y_train)
-    print("Decision_Tree Score: ", model.score(x_test, y_test))
+    DT_model = DecisionTreeClassifier()
+    DT_model.fit(x_train, y_train)
+    print("Decision_Tree Score: ", DT_model.score(x_test, y_test))
 
 
 def KNN_Classifier_Model():
-    model = KNeighborsClassifier(n_neighbors = 31)
-    model = model.fit(x_train, y_train)
-    print("KNN Score: ", model.score(x_test, y_test))
+    KNN_model = KNeighborsClassifier(n_neighbors=31)
+    KNN_model.fit(x_train, y_train)
+    print("KNN Score: ", KNN_model.score(x_test, y_test))
 
 
 def GaussianNB_Classifier_Model():
-    model = GaussianNB()
-    model = model.fit(x_train, y_train)
-    print("GaussianNB Score: ", model.score(x_test, y_test))
+    NB_model = GaussianNB()
+    NB_model.fit(x_train, y_train)
+    print("GaussianNB Score: ", NB_model.score(x_test, y_test))
 
 
 def LogisticRegression_Model():
-    model = LogisticRegression(max_iter=1000)
-    model.fit(x_train, y_train)
-    print("LogisticRegression Score: ", model.score(x_test, y_test))
+    LR_model = LogisticRegression(max_iter=1000)
+    LR_model.fit(x_train, y_train)
+    print("LogisticRegression Score: ", LR_model.score(x_test, y_test))
 
 
-def SVM_Model():
-    model = LinearSVC(C=0.0001)
-    model.fit(x_train, y_train)
-    print("SVM Score: ", model.score(x_test, y_test))
+def SVM():
+    SVM_model = LinearSVC(C=0.0001)
+    SVM_model.fit(x_train, y_train)
+    print("SVM Score: ", SVM_model.score(x_test, y_test))
 
 
 def BaggingClassifier_Model():
     # max_samples: maximum size 0.5=50% of each sample taken from the full dataset
     # max_features: maximum of features 1=100% taken here all 10K
     # n_estimators: number of decision trees
-    model = BaggingClassifier(DecisionTreeClassifier(), max_samples=0.5, max_features=1.0, n_estimators=7)
-    model.fit(x_train, y_train)
-    print("Bagging Score: ", model.score(x_test, y_test))
+    bagging_model = BaggingClassifier(DecisionTreeClassifier(), max_samples=0.5, max_features=1.0, n_estimators=7)
+    bagging_model.fit(x_train, y_train)
+    print("Bagging Score: ", bagging_model.score(x_test, y_test))
+
+
+def VotingClassifier_Model():
+    # 1) naive bias = NB_model
+    # 2) logistic regression =LR_model
+    # 3) random forest =LR_model
+    # 4) support vector machine = SVM_model
+    evc = VotingClassifier(estimators=[('mnb', GaussianNB()), ('lr', LogisticRegression(max_iter=1000)),
+                                       ('rf', RandomForestClassifier(n_estimators=35, max_depth=7))], voting='hard')
+    evc.fit(x_train, y_train)
+    print("score on test: " + str(evc.score(x_test, y_test)))
+    print("score on train: " + str(evc.score(x_train, y_train)))
 
 
 # read data
@@ -190,17 +202,16 @@ for i in range(len(Dependents_list)):
 
 data['Dependents'] = Dependents_list
 
-
 # split data into train data and test data
 x = data.iloc[:, 1: -1]
 y = data.iloc[:, -1]
-
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
 Decision_Tree_Classifier_Model()
 KNN_Classifier_Model()
 GaussianNB_Classifier_Model()
 LogisticRegression_Model()
-SVM_Model()
+SVM()
 BaggingClassifier_Model()
 RandomForestClassifier_Model()
+VotingClassifier_Model()
