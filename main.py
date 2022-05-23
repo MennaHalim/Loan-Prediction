@@ -20,6 +20,15 @@ from keras import optimizers
 from keras import losses
 from keras import metrics
 
+#LR_model = 0
+#DT_model = 0
+#KNN_model = 0
+#NB_model = 0
+#RF_model = 0
+#SVM_model = 0
+#bagging_model = 0
+#voting_Model = 0
+
 
 def NN():
     # split an additional validation dataset
@@ -36,9 +45,9 @@ def NN():
 
 def RandomForestClassifier_Model():
     # n_estimators = number of decision trees
-    LR_model = RandomForestClassifier(n_estimators=35, max_depth=7)
-    LR_model.fit(x_train, y_train)
-    print("RandomForest Score: ", LR_model.score(x_test, y_test))
+    RF_model = RandomForestClassifier(n_estimators=35, max_depth=7)
+    RF_model.fit(x_train, y_train)
+    print("RandomForest Score: ", RF_model.score(x_test, y_test))
 
 
 def Decision_Tree_Classifier_Model():
@@ -62,8 +71,10 @@ def GaussianNB_Classifier_Model():
 def LogisticRegression_Model():
     LR_model = LogisticRegression(max_iter=1000)
     LR_model.fit(x_train, y_train)
-    print("LogisticRegression Score: ", LR_model.score(x_test, y_test))
+    res = LR_model.predict(New_Customer.iloc[:, 1:])
 
+    print("LogisticRegression Score: ", LR_model.score(x_test, y_test))
+    print(res)
 
 def SVM():
     SVM_model = LinearSVC(C=0.0001)
@@ -85,13 +96,21 @@ def VotingClassifier_Model():
     # 2) logistic regression =LR_model
     # 3) random forest =LR_model
     # 4) support vector machine = SVM_model
-    evc = VotingClassifier(estimators=[('mnb', GaussianNB()), ('lr', LogisticRegression(max_iter=1000)),
+    voting_Model = VotingClassifier(estimators=[('mnb', GaussianNB()), ('lr', LogisticRegression(max_iter=1000)),
                                        ('rf', RandomForestClassifier(n_estimators=35, max_depth=7))], voting='hard')
-    evc.fit(x_train, y_train)
-    print("voting score: " + str(evc.score(x_test, y_test)))
+    voting_Model = voting_Model.fit(x_train, y_train)
+    print("voting score: " + str(voting_Model.score(x_test, y_test)))
+
+
+def test_new_data():
+    new_data = pd.read_csv('New Customer.csv')
+    print("voting score: ", RF_model.predict(new_data.iloc[:, 1:]))
+
 
 # read data
 data = pd.read_csv('Train data.csv')
+New_Customer = pd.read_csv('New Customer.csv')
+
 # preprocessing
 # # Handle  Missing values
 
@@ -233,3 +252,4 @@ BaggingClassifier_Model()
 RandomForestClassifier_Model()
 VotingClassifier_Model()
 #NN()
+#test_new_data()
