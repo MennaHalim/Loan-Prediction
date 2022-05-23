@@ -3,7 +3,8 @@ from turtle import mode
 
 import numpy as np
 import pandas as pd
-from sklearn import preprocessing
+from matplotlib import pyplot as plt, pyplot
+from sklearn import preprocessing, tree
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.tree import DecisionTreeClassifier
@@ -41,6 +42,25 @@ def Decision_Tree_Classifier_Model():
     DT_model = DecisionTreeClassifier()
     DT_model.fit(x_train, y_train)
     print("Decision_Tree Score: ", DT_model.score(x_test, y_test))
+
+    # visualization
+    fig = plt.figure(figsize=(25, 20))
+    tree.plot_tree(DT_model,
+                   feature_names=['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed', 'ApplicantIncome',
+                                  'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term', 'Credit_History',
+                                  'Property_Area'],
+
+                   filled=True);
+    fig.savefig("decistion_tree.png", dpi=300)
+
+    # importance
+    importance = DT_model.feature_importances_
+    # summarize feature importance
+    for i, v in enumerate(importance):
+        print('Feature: %0d, Score: %.5f' % (i, v))
+    # plot feature importance
+    pyplot.bar([x for x in range(len(importance))], importance)
+    pyplot.show()
 
 
 def KNN_Classifier_Model():
