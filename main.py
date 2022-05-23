@@ -1,7 +1,9 @@
+from builtins import print
 from turtle import mode
 
 import numpy as np
 import pandas as pd
+from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.tree import DecisionTreeClassifier
@@ -13,12 +15,6 @@ from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-
-#from keras import layers
-#from keras import models
-#from keras import optimizers
-#from keras import losses
-#from keras import metrics
 
 
 #def NN():
@@ -36,11 +32,11 @@ from sklearn.ensemble import RandomForestClassifier
 
 def RandomForestClassifier_Model():
     # n_estimators = number of decision trees
-    LR_model = RandomForestClassifier(n_estimators=35, max_depth=7)
-    LR_model.fit(x_train, y_train)
-    print("RandomForest Score: ", LR_model.score(x_test, y_test))
-    LR_model.predict(new_data)
-
+    RF_model = RandomForestClassifier(n_estimators=35, max_depth=7)
+    RF_model.fit(x_train, y_train)
+    print("RandomForest Score: ", RF_model.score(x_test, y_test))
+    result = RF_model.predict(new_data.iloc[:, 1:])
+    print(result)
 
 def Decision_Tree_Classifier_Model():
     DT_model = DecisionTreeClassifier()
@@ -198,38 +194,16 @@ data.dropna(subset=['Property_Area'], inplace=True)
 # # Handle  Wrong format
 # --> Encoding
 
-categorical_columns = [data['Gender'], data['Married'], data['Education'], data['Property_Area'], data['Self_Employed'], data['Loan_Status']]
-df=pd.DataFrame(categorical_columns,columns=['Gender','Married','Education', 'Property_Area', 'Self_Employed', 'Loan_Status'])
+categorical_col = data.select_dtypes(include=['object']).columns.to_list()
+categorical_col = categorical_col[1:7]
+data[categorical_col] = data[categorical_col].astype('string')
 
-#labelEncoder = LabelEncoder()
-labelEncoder=OneHotEncoder(categories = "auto", handle_unknown = "ignore",sparse=False)
-labelEncoder.fit_transform(df)
+label_encoders = []
+for category in categorical_col:
+    label_encoder = preprocessing.LabelEncoder()
+    data[category] = label_encoder.fit_transform(data[category])
+    label_encoders.append(label_encoder)
 
-data['Gender'] = labelEncoder.transform(data['Gender'])
-
-#labelEncoder.fit(data['Married'])
-data['Married'] = labelEncoder.transform(data['Married'])
-
-#labelEncoder.fit(data['Education'])
-data['Education'] = labelEncoder.transform(data['Education'])
-
-#labelEncoder.fit(data['Property_Area'])
-data['Property_Area'] = labelEncoder.transform(data['Property_Area'])
-
-#labelEncoder.fit_transform(data['Self_Employed'])
-data['Self_Employed'] = labelEncoder.transform(data['Self_Employed'])
-
-#labelEncoder.fit(data['Loan_Status'])
-data['Loan_Status'] = labelEncoder.transform(data['Loan_Status'])
-
-# --> Handle Dependents +3 category
-Dependents_list = list(data.iloc[:, 3])
-# print(Dependents_list)
-for i in range(len(Dependents_list)):
-    if Dependents_list[i] != '0' and Dependents_list[i] != '1' and Dependents_list[i] != '2':
-        Dependents_list[i] = '3'
-
-data['Dependents'] = Dependents_list
 
 # split data into train data and test data
 x = data.iloc[:, 1: -1]
@@ -237,12 +211,11 @@ y = data.iloc[:, -1]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
 
-# new customers encoding
-#new_data['Gender'] = labelEncoder.transform(new_data['Gender'])
-new_data['Married'] = labelEncoder.transform(new_data['Married'])
-new_data['Education'] = labelEncoder.transform(new_data['Education'])
-new_data['Self_Employed'] = labelEncoder.transform(new_data['Self_Employed'])
-new_data['Property_Area'] = labelEncoder.transform(new_data['Property_Area'])
+new_data[categorical_col] = new_data[categorical_col].astype("string")
+
+new_data = new_data.apply(lambda col: col.fillna(col.value_counts().index[0]))
+for idx in range(len(categorical_col)):
+    new_data[categorical_col[idx]] = label_encoders[idx].transform(new_data[categorical_col[idx]])
 
 
 Decision_Tree_Classifier_Model()
@@ -251,6 +224,7 @@ GaussianNB_Classifier_Model()
 LogisticRegression_Model()
 SVM()
 BaggingClassifier_Model()
-RandomForestClassifier_Model()
 VotingClassifier_Model()
-#NN()
+# NN()
+RandomForestClassifier_Model()
+
