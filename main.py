@@ -35,8 +35,7 @@ def RandomForestClassifier_Model():
     RF_model = RandomForestClassifier(n_estimators=35, max_depth=7)
     RF_model.fit(x_train, y_train)
     print("RandomForest Score: ", RF_model.score(x_test, y_test))
-    result = RF_model.predict(new_data.iloc[:, 1:])
-    print(result)
+    return RF_model
 
 def Decision_Tree_Classifier_Model():
     DT_model = DecisionTreeClassifier()
@@ -211,12 +210,6 @@ y = data.iloc[:, -1]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
 
-new_data[categorical_col] = new_data[categorical_col].astype("string")
-
-new_data = new_data.apply(lambda col: col.fillna(col.value_counts().index[0]))
-for idx in range(len(categorical_col)):
-    new_data[categorical_col[idx]] = label_encoders[idx].transform(new_data[categorical_col[idx]])
-
 
 Decision_Tree_Classifier_Model()
 KNN_Classifier_Model()
@@ -226,5 +219,22 @@ SVM()
 BaggingClassifier_Model()
 VotingClassifier_Model()
 # NN()
-RandomForestClassifier_Model()
+RF_model = RandomForestClassifier_Model()
 
+new_data = new_data.apply(lambda col: col.fillna(col.value_counts().index[0]))
+for idx in range(len(categorical_col)):
+    new_data[categorical_col[idx]] = label_encoders[idx].transform(new_data[categorical_col[idx]])
+
+
+result = RF_model.predict(new_data.iloc[:, 1:])
+print(result)
+
+Semiurban_code = label_encoders[-1].transform(['Semiurban'])
+married_code = label_encoders[1].transform(['Yes'])
+counter = 0
+
+for idx in range(len(new_data)):
+    if result[idx] == 'Y' and new_data['Property_Area'][idx] == Semiurban_code[0] and  new_data['Married'][idx] == married_code[0]:
+        counter += 1
+
+print("the percentage of married people in semiurban area that obtained the loan: ", (counter*100)/367)
