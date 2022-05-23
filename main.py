@@ -3,7 +3,7 @@ from turtle import mode
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -14,40 +14,32 @@ from sklearn.ensemble import VotingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 
-from keras import layers
-from keras import models
-from keras import optimizers
-from keras import losses
-from keras import metrics
-
-#LR_model = 0
-#DT_model = 0
-#KNN_model = 0
-#NB_model = 0
-#RF_model = 0
-#SVM_model = 0
-#bagging_model = 0
-#voting_Model = 0
+#from keras import layers
+#from keras import models
+#from keras import optimizers
+#from keras import losses
+#from keras import metrics
 
 
-def NN():
+#def NN():
     # split an additional validation dataset
-    x_partial_train, x_validation ,y_partial_train ,y_validation= train_test_split(x_train, y_train, test_size=0.3, random_state=0)
-    model = models.Sequential()
-    model.add(layers.Dense(16, activation='relu', input_shape=(490,)))
-    model.add(layers.Dense(16, activation='relu'))
-    model.add(layers.Dense(1, activation='sigmoid'))
-    model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
-    model.fit(x_partial_train, y_partial_train, epochs=4, batch_size=10, validation_data=(x_validation, y_validation))
-    print("score on test: " + str(model.evaluate(x_test, y_test)[1]))
-    print("score on train: " + str(model.evaluate(x_train, y_train)[1]))
+    #x_partial_train, x_validation ,y_partial_train ,y_validation= train_test_split(x_train, y_train, test_size=0.3, random_state=0)
+    #model = models.Sequential()
+    #model.add(layers.Dense(16, activation='relu', input_shape=(490,)))
+    #model.add(layers.Dense(16, activation='relu'))
+    #model.add(layers.Dense(1, activation='sigmoid'))
+    #model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+    #model.fit(x_partial_train, y_partial_train, epochs=4, batch_size=10, validation_data=(x_validation, y_validation))
+    #print("score on test: " + str(model.evaluate(x_test, y_test)[1]))
+    #print("score on train: " + str(model.evaluate(x_train, y_train)[1]))
 
 
 def RandomForestClassifier_Model():
     # n_estimators = number of decision trees
-    RF_model = RandomForestClassifier(n_estimators=35, max_depth=7)
-    RF_model.fit(x_train, y_train)
-    print("RandomForest Score: ", RF_model.score(x_test, y_test))
+    LR_model = RandomForestClassifier(n_estimators=35, max_depth=7)
+    LR_model.fit(x_train, y_train)
+    print("RandomForest Score: ", LR_model.score(x_test, y_test))
+    LR_model.predict(new_data)
 
 
 def Decision_Tree_Classifier_Model():
@@ -71,13 +63,11 @@ def GaussianNB_Classifier_Model():
 def LogisticRegression_Model():
     LR_model = LogisticRegression(max_iter=1000)
     LR_model.fit(x_train, y_train)
-    res = LR_model.predict(New_Customer.iloc[:, 1:])
-
     print("LogisticRegression Score: ", LR_model.score(x_test, y_test))
-    print(res)
+
 
 def SVM():
-    SVM_model = LinearSVC(C=0.0001)
+    SVM_model = LinearSVC(C=0.0001, dual=False)
     SVM_model.fit(x_train, y_train)
     print("SVM Score: ", SVM_model.score(x_test, y_test))
 
@@ -96,20 +86,17 @@ def VotingClassifier_Model():
     # 2) logistic regression =LR_model
     # 3) random forest =LR_model
     # 4) support vector machine = SVM_model
-    voting_Model = VotingClassifier(estimators=[('mnb', GaussianNB()), ('lr', LogisticRegression(max_iter=1000)),
+    evc = VotingClassifier(estimators=[('mnb', GaussianNB()), ('lr', LogisticRegression(max_iter=1000)),
                                        ('rf', RandomForestClassifier(n_estimators=35, max_depth=7))], voting='hard')
-    voting_Model = voting_Model.fit(x_train, y_train)
-    print("voting score: " + str(voting_Model.score(x_test, y_test)))
-
-
-def test_new_data():
-    new_data = pd.read_csv('New Customer.csv')
-    print("voting score: ", RF_model.predict(new_data.iloc[:, 1:]))
-
+    evc.fit(x_train, y_train)
+    print("voting score: " + str(evc.score(x_test, y_test)))
 
 # read data
 data = pd.read_csv('Train data.csv')
-New_Customer = pd.read_csv('New Customer.csv')
+
+# read new customers
+new_data = pd.read_csv('New Customer.csv')
+
 
 # preprocessing
 # # Handle  Missing values
@@ -210,23 +197,29 @@ data.dropna(subset=['Property_Area'], inplace=True)
 
 # # Handle  Wrong format
 # --> Encoding
-labelEncoder = LabelEncoder()
-labelEncoder.fit(data['Gender'])
+
+categorical_columns = [data['Gender'], data['Married'], data['Education'], data['Property_Area'], data['Self_Employed'], data['Loan_Status']]
+df=pd.DataFrame(categorical_columns,columns=['Gender','Married','Education', 'Property_Area', 'Self_Employed', 'Loan_Status'])
+
+#labelEncoder = LabelEncoder()
+labelEncoder=OneHotEncoder(categories = "auto", handle_unknown = "ignore",sparse=False)
+labelEncoder.fit_transform(df)
+
 data['Gender'] = labelEncoder.transform(data['Gender'])
 
-labelEncoder.fit(data['Married'])
+#labelEncoder.fit(data['Married'])
 data['Married'] = labelEncoder.transform(data['Married'])
 
-labelEncoder.fit(data['Education'])
+#labelEncoder.fit(data['Education'])
 data['Education'] = labelEncoder.transform(data['Education'])
 
-labelEncoder.fit(data['Property_Area'])
+#labelEncoder.fit(data['Property_Area'])
 data['Property_Area'] = labelEncoder.transform(data['Property_Area'])
 
-labelEncoder.fit(data['Self_Employed'])
+#labelEncoder.fit_transform(data['Self_Employed'])
 data['Self_Employed'] = labelEncoder.transform(data['Self_Employed'])
 
-labelEncoder.fit(data['Loan_Status'])
+#labelEncoder.fit(data['Loan_Status'])
 data['Loan_Status'] = labelEncoder.transform(data['Loan_Status'])
 
 # --> Handle Dependents +3 category
@@ -243,6 +236,15 @@ x = data.iloc[:, 1: -1]
 y = data.iloc[:, -1]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
+
+# new customers encoding
+#new_data['Gender'] = labelEncoder.transform(new_data['Gender'])
+new_data['Married'] = labelEncoder.transform(new_data['Married'])
+new_data['Education'] = labelEncoder.transform(new_data['Education'])
+new_data['Self_Employed'] = labelEncoder.transform(new_data['Self_Employed'])
+new_data['Property_Area'] = labelEncoder.transform(new_data['Property_Area'])
+
+
 Decision_Tree_Classifier_Model()
 KNN_Classifier_Model()
 GaussianNB_Classifier_Model()
@@ -252,4 +254,3 @@ BaggingClassifier_Model()
 RandomForestClassifier_Model()
 VotingClassifier_Model()
 #NN()
-#test_new_data()
