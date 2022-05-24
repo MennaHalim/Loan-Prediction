@@ -213,12 +213,10 @@ data.dropna(subset=['Property_Area'], inplace=True)
 # # Handle  Wrong format
 # --> Encoding
 
-# find important columns name which contain nun numeric values & convert it's type to string
 categorical_col = data.select_dtypes(include=['object']).columns.to_list()
 categorical_col = categorical_col[1:7]
 data[categorical_col] = data[categorical_col].astype('string')
 
-# encode categorical columns
 label_encoders = []
 for category in categorical_col:
     label_encoder = preprocessing.LabelEncoder()
@@ -243,10 +241,7 @@ VotingClassifier_Model()
 # NN()
 RF_model = RandomForestClassifier_Model()
 
-# replace null with most repeated value
 new_data = new_data.apply(lambda col: col.fillna(col.value_counts().index[0]))
-
-# encode columns which contain nun numeric values
 for idx in range(len(categorical_col)):
     new_data[categorical_col[idx]] = label_encoders[idx].transform(new_data[categorical_col[idx]])
 
@@ -254,12 +249,10 @@ for idx in range(len(categorical_col)):
 result = RF_model.predict(new_data.iloc[:, 1:])
 print(result)
 
-# find encode values for Property_Area = Semiurban & married = Yes
 Semiurban_code = label_encoders[-1].transform(['Semiurban'])
 married_code = label_encoders[1].transform(['Yes'])
 counter = 0
 
-# calculate the percentage of married people in semiurban area that obtained the loan
 for idx in range(len(new_data)):
     if result[idx] == 'Y' and new_data['Property_Area'][idx] == Semiurban_code[0] and  new_data['Married'][idx] == married_code[0]:
         counter += 1
