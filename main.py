@@ -1,6 +1,5 @@
 from builtins import print
 from turtle import mode
-
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt, pyplot
@@ -18,19 +17,6 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 
 
-#def NN():
-    # split an additional validation dataset
-    #x_partial_train, x_validation ,y_partial_train ,y_validation= train_test_split(x_train, y_train, test_size=0.3, random_state=0)
-    #model = models.Sequential()
-    #model.add(layers.Dense(16, activation='relu', input_shape=(490,)))
-    #model.add(layers.Dense(16, activation='relu'))
-    #model.add(layers.Dense(1, activation='sigmoid'))
-    #model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
-    #model.fit(x_partial_train, y_partial_train, epochs=4, batch_size=10, validation_data=(x_validation, y_validation))
-    #print("score on test: " + str(model.evaluate(x_test, y_test)[1]))
-    #print("score on train: " + str(model.evaluate(x_train, y_train)[1]))
-
-
 def RandomForestClassifier_Model():
     # n_estimators = number of decision trees
     RF_model = RandomForestClassifier(n_estimators=35, max_depth=7)
@@ -42,14 +28,13 @@ def Decision_Tree_Classifier_Model():
     DT_model = DecisionTreeClassifier()
     DT_model.fit(x_train, y_train)
     print("Decision_Tree Score: ", DT_model.score(x_test, y_test))
-
+"""
     # visualization
     fig = plt.figure(figsize=(25, 20))
     tree.plot_tree(DT_model,
                    feature_names=['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed', 'ApplicantIncome',
                                   'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term', 'Credit_History',
                                   'Property_Area'],
-
                    filled=True);
     fig.savefig("decistion_tree.png", dpi=300)
 
@@ -58,10 +43,7 @@ def Decision_Tree_Classifier_Model():
     # summarize feature importance
     for i, v in enumerate(importance):
         print('Feature: %0d, Score: %.5f' % (i, v))
-    # plot feature importance
-    pyplot.bar([x for x in range(len(importance))], importance)
-    pyplot.show()
-
+    """
 
 def KNN_Classifier_Model():
     KNN_model = KNeighborsClassifier(n_neighbors=31)
@@ -112,18 +94,19 @@ data = pd.read_csv('Train data.csv')
 # read new customers
 new_data = pd.read_csv('New Customer.csv')
 
+# data before preprocessing
+#print(data)
 
 # preprocessing
 # # Handle  Missing values
 
+
 # ##Gender
 # --> remove non values
-data.dropna(subset=['Gender'], inplace=True)
-
+#data.dropna(subset=['Gender'], inplace=True)
 # --> replace with most repeated value
-# val = data['Gender'].mode()[0]
-# data['Gender'].fillna(val, inplace=True)
-
+val = data['Gender'].mode()[0]
+data['Gender'].fillna(val, inplace=True)
 
 # ##Married
 # --> remove non values
@@ -133,15 +116,12 @@ data.dropna(subset=['Married'], inplace=True)
 # val = data['Married'].mode()[0]
 # data['Married'].fillna(val, inplace=True)
 
-
 # ##Dependents
 # --> replace with 0
-data['Dependents'].fillna(0, inplace=True)
-
+#data['Dependents'].fillna(0, inplace=True)
 # --> replace with most repeated value
-# val = data['Dependents'].mode()[0]
-# data['Dependents'].fillna(val, inplace=True)
-
+val = data['Dependents'].mode()[0]
+data['Dependents'].fillna(val, inplace=True)
 
 # ##Education
 # --> remove non values
@@ -154,11 +134,11 @@ data.dropna(subset=['Education'], inplace=True)
 
 # ##Self_Employed
 # --> remove non values
-data.dropna(subset=['Self_Employed'], inplace=True)
+#data.dropna(subset=['Self_Employed'], inplace=True)
 
 # --> replace with most repeated value
-# val = data['Self_Employed'].mode()[0]
-# data['Self_Employed'].fillna(val, inplace=True)
+val = data['Self_Employed'].mode()[0]
+data['Self_Employed'].fillna(val, inplace=True)
 
 # --> replace with zero
 # data['Self_Employed'].fillna(0, inplace=True)
@@ -166,11 +146,11 @@ data.dropna(subset=['Self_Employed'], inplace=True)
 
 # ##ApplicantIncome
 # --> remove non values
-data.dropna(subset=['ApplicantIncome'], inplace=True)
+#data.dropna(subset=['ApplicantIncome'], inplace=True)
 
 # --> replace with median
-# val = data['ApplicantIncome'].median()
-# data['ApplicantIncome'].fillna(val, inplace=True)
+val = data['ApplicantIncome'].median()
+data['ApplicantIncome'].fillna(val, inplace=True)
 
 
 # ##CoapplicantIncome
@@ -185,7 +165,6 @@ data['CoapplicantIncome'].fillna(0, inplace=True)
 # ##LoanAmount
 # --> remove non values
 data.dropna(subset=['LoanAmount'], inplace=True)
-
 # ##Loan_Amount_Term
 # --> remove non values
 data.dropna(subset=['Loan_Amount_Term'], inplace=True)
@@ -196,23 +175,20 @@ data.dropna(subset=['Credit_History'], inplace=True)
 
 # ##Property_Area
 # --> remove non values
-data.dropna(subset=['Property_Area'], inplace=True)
+#data.dropna(subset=['Property_Area'], inplace=True)
 
 # --> replace with most repeated value
-# val = data['Property_Area'].mode()[0]
-# data['Property_Area'].fillna(val, inplace=True)
+val = data['Property_Area'].mode()[0]
+data['Property_Area'].fillna(val, inplace=True)
 
+# data after preprocessing
+#print(data)
 
-# calculate lift score
-# from mlxtend.evaluate import lift_score
-# print(data.to_string())
-# lift = lift_score(data.iloc[:, 1], data.iloc[:, -1])
-# lift
-
+# print before encoding
+# print(data)
 
 # # Handle  Wrong format
 # --> Encoding
-
 # find important columns name which contain nun numeric values & convert it's type to string
 categorical_col = data.select_dtypes(include=['object']).columns.to_list()
 categorical_col = categorical_col[1:7]
@@ -225,6 +201,8 @@ for category in categorical_col:
     data[category] = label_encoder.fit_transform(data[category])
     label_encoders.append(label_encoder)
 
+# print after encoding
+# print(data)
 
 # split data into train data and test data
 x = data.iloc[:, 1: -1]
